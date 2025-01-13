@@ -3,6 +3,7 @@ package github.dwep1337.updown.domain.service;
 
 import java.util.UUID;
 
+import github.dwep1337.updown.exception.FileNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -44,5 +45,19 @@ public class FileUploadService {
 
     private String generateReferenceCode() {
         return UUID.randomUUID().toString().substring(0, 8);
+    }
+
+    public void deleteFile(String referenceCode) {
+
+        File file = fileRepository.findByReferenceCode(referenceCode);
+
+        if (file == null) {
+            throw new FileNotFoundException("File not found");
+        }
+
+        //delete from database
+        fileRepository.delete(file);
+        //delete from MinIO
+        minIOService.deleteFile(referenceCode);
     }
 }

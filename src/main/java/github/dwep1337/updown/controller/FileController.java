@@ -9,6 +9,7 @@ import github.dwep1337.updown.shared.dtos.FileUploadDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,5 +30,11 @@ public class FileController {
     @GetMapping("/download/{referenceCode}")
     public ResponseEntity<InputStreamResource> downloadFile(@PathVariable String referenceCode) {
         return downloadFileService.downloadFile(referenceCode);
+    }
+
+    @DeleteMapping("/{referenceCode}")
+    public ResponseEntity<Void> deleteFile(@PathVariable String referenceCode) {
+        fileUploadService.deleteFile(referenceCode);
+        return ResponseEntity.noContent().build();
     }
 }
