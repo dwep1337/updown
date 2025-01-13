@@ -1,5 +1,6 @@
 package github.dwep1337.updown.domain.service;
 
+import github.dwep1337.updown.config.DotEnvConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.core.io.InputStreamResource;
@@ -14,7 +15,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 @Service
 @RequiredArgsConstructor
 public class MinIOService {
-    private final static String BUCKET_NAME = "creek-uploads";
+    private final static String BUCKET_NAME = DotEnvConfig.dotenv().get("MINIO_BUCKET_NAME");
     private final S3Client s3Client;
 
     @SneakyThrows

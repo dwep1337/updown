@@ -16,10 +16,9 @@ import software.amazon.awssdk.services.s3.S3Configuration;
 @Configuration
 public class MinIOConfig {
 
-    private final Dotenv dotenv = Dotenv.configure().load();
-    private final String MINIO_ENDPOINT = dotenv.get("MINIO_ENDPOINT");
-    private final String MINIO_ACCESS_KEY = dotenv.get("MINIO_ACCESS_KEY");
-    private final String MINIO_SECRET_KEY = dotenv.get("MINIO_SECRET_KEY");
+    private final String MINIO_ENDPOINT = DotEnvConfig.dotenv().get("MINIO_ENDPOINT");
+    private final String MINIO_ACCESS_KEY = DotEnvConfig.dotenv().get("MINIO_ACCESS_KEY");
+    private final String MINIO_SECRET_KEY = DotEnvConfig.dotenv().get("MINIO_SECRET_KEY");
 
 
     @Bean
@@ -30,7 +29,7 @@ public class MinIOConfig {
                         .create(AwsBasicCredentials.create(MINIO_ACCESS_KEY, MINIO_SECRET_KEY)))
                 .serviceConfiguration(S3Configuration.builder()
                         .pathStyleAccessEnabled(true) //need this for work with minio
-                .build()).build();
+                        .build()).build();
     }
 
 }
