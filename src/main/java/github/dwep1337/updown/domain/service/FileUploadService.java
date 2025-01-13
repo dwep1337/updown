@@ -1,16 +1,17 @@
 package github.dwep1337.updown.domain.service;
 
 
-import java.util.UUID;
-
+import github.dwep1337.updown.config.DotEnvConfig;
+import github.dwep1337.updown.domain.entity.File;
+import github.dwep1337.updown.domain.repositories.FileRepository;
 import github.dwep1337.updown.exception.FileNotFoundException;
+import github.dwep1337.updown.shared.dtos.FileUploadDTO;
+import github.dwep1337.updown.shared.dtos.FileUploadResponseDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import github.dwep1337.updown.domain.entity.File;
-import github.dwep1337.updown.domain.repositories.FileRepository;
-import github.dwep1337.updown.shared.dtos.FileUploadDTO;
-import lombok.RequiredArgsConstructor;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +20,8 @@ public class FileUploadService {
     private final MinIOService minIOService;
     private final FileRepository fileRepository;
 
-    public ResponseEntity<File> uploadFile(FileUploadDTO fileUploadDTO) {
+
+    public ResponseEntity<FileUploadResponseDTO> uploadFile(FileUploadDTO fileUploadDTO) {
 
         String referenceCode = generateReferenceCode();
         minIOService.uploadFile(fileUploadDTO.file(), referenceCode);
@@ -29,7 +31,8 @@ public class FileUploadService {
         //save on database
         fileRepository.save(file);
 
-        return ResponseEntity.ok().body(file);
+        String downloadUrl = String.format("%s/files/download/%s", DotEnvConfig.dotenv().get("BASE_URL"), referenceCode);
+        return ResponseEntity.ok().body(new FileUploadResponseDTO(downloadUrl));
     }
 
     private File createFile(FileUploadDTO fileUploadDTO, String referenceCode) {
@@ -55,9 +58,8 @@ public class FileUploadService {
             throw new FileNotFoundException("File not found");
         }
 
-        //delete from database
-        fileRepository.delete(file);
-        //delete from MinIO
-        minIOService.deleteFile(referenceCode);
+
+        fileRepository.delete(file);     //delete from database
+        minIOService.deleteFile(referenceCode);    //delete from MinIO
     }
 }
