@@ -6,6 +6,7 @@ import github.dwep1337.updown.domain.service.DownloadFileService;
 import github.dwep1337.updown.domain.service.FileUploadService;
 import github.dwep1337.updown.shared.dtos.CreateContentTypeDTO;
 import github.dwep1337.updown.shared.dtos.FileUploadDTO;
+import github.dwep1337.updown.shared.dtos.FileUploadResponseDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
@@ -23,13 +24,14 @@ public class FileController {
     private final DownloadFileService downloadFileService;
 
     @PostMapping
-    public ResponseEntity<File> uploadFile(@Valid @ModelAttribute FileUploadDTO fileUploadDTO) {
+    public ResponseEntity<FileUploadResponseDTO> uploadFile(@Valid @ModelAttribute FileUploadDTO fileUploadDTO) {
         return fileUploadService.uploadFile(fileUploadDTO);
     }
 
-    @GetMapping("/download/{referenceCode}")
-    public ResponseEntity<InputStreamResource> downloadFile(@PathVariable String referenceCode) {
-        return downloadFileService.downloadFile(referenceCode);
+    @GetMapping()
+    public ResponseEntity<InputStreamResource> downloadFile(
+            @RequestParam(value = "download", defaultValue = "") String download) {
+        return downloadFileService.downloadFile(download);
     }
 
     @DeleteMapping("/{referenceCode}")
