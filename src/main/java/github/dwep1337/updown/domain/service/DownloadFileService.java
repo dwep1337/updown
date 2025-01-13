@@ -18,7 +18,7 @@ public class DownloadFileService {
 
         File file = fileRepository.findByReferenceCode(referenceCode);
 
-        if (file == null) {
+        if (file == null || !minIOService.fileExists(referenceCode)) {
             return ResponseEntity.notFound().build();
         }
 
