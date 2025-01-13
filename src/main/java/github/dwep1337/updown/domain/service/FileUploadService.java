@@ -1,4 +1,4 @@
-package github.dwep1337.updown.service;
+package github.dwep1337.updown.domain.service;
 
 
 import java.util.UUID;
@@ -18,7 +18,7 @@ public class FileUploadService {
     private final MinIOService minIOService;
     private final FileRepository fileRepository;
 
-    public ResponseEntity<?> uploadFile(FileUploadDTO fileUploadDTO) {
+    public ResponseEntity<File> uploadFile(FileUploadDTO fileUploadDTO) {
 
         String referenceCode = generateReferenceCode();
         minIOService.uploadFile(fileUploadDTO.file(), referenceCode);
@@ -32,11 +32,13 @@ public class FileUploadService {
     }
 
     private File createFile(FileUploadDTO fileUploadDTO, String referenceCode) {
+        long bytesToMegabytes = fileUploadDTO.file().getSize() / (1024 * 1024); // Convert bytes to MB
+
         return File.builder()
                 .fileName(fileUploadDTO.file().getOriginalFilename())
                 .contentType(fileUploadDTO.file().getContentType())
                 .referenceCode(referenceCode)
-                .size(fileUploadDTO.file().getSize() / (1024 * 1024)) // Convert bytes to MB
+                .size(bytesToMegabytes)
                 .build();
     }
 

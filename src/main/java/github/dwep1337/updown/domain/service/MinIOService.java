@@ -1,21 +1,22 @@
-package github.dwep1337.updown.service;
+package github.dwep1337.updown.domain.service;
 
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 
 @Service
 @RequiredArgsConstructor
 public class MinIOService {
     private final static String BUCKET_NAME = "creek-uploads";
-
-     private final S3Client s3Client;
-
+    private final S3Client s3Client;
 
      @SneakyThrows
      public void uploadFile(MultipartFile file, String referenceCode) {
@@ -32,5 +33,15 @@ public class MinIOService {
         s3Client.putObject(request, requestBody);
      }
 
+     @SneakyThrows
+     public InputStreamResource downloadFile(String referenceCode) {
 
+       var response = s3Client.getObject(GetObjectRequest.builder()
+                .bucket(BUCKET_NAME)
+                .key(referenceCode)
+                .build());
+
+        return new InputStreamResource(response);
+
+     }
 }
