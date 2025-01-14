@@ -5,9 +5,10 @@ import github.dwep1337.updown.config.DotEnvConfig;
 import github.dwep1337.updown.domain.entity.File;
 import github.dwep1337.updown.domain.repositories.FileRepository;
 import github.dwep1337.updown.exception.FileNotFoundException;
-import github.dwep1337.updown.shared.dtos.FileUploadDTO;
-import github.dwep1337.updown.shared.dtos.FileUploadResponseDTO;
+import github.dwep1337.updown.shared.dtos.create.FileUploadDTO;
+import github.dwep1337.updown.shared.dtos.response.FileUploadResponseDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,8 @@ public class FileUploadService {
         fileRepository.save(file);
 
         String downloadUrl = String.format("%s/files/download/%s", DotEnvConfig.dotenv().get("BASE_URL"), referenceCode);
-        return ResponseEntity.ok().body(new FileUploadResponseDTO(downloadUrl));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new FileUploadResponseDTO(downloadUrl));
     }
 
     private File createFile(FileUploadDTO fileUploadDTO, String referenceCode) {
@@ -57,7 +59,6 @@ public class FileUploadService {
         if (file == null) {
             throw new FileNotFoundException("File not found");
         }
-
 
         fileRepository.delete(file);     //delete from database
         minIOService.deleteFile(referenceCode);    //delete from MinIO

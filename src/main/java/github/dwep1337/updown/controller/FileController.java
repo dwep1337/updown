@@ -1,16 +1,12 @@
 package github.dwep1337.updown.controller;
 
-import github.dwep1337.updown.domain.entity.File;
-import github.dwep1337.updown.domain.service.ContentTypeService;
 import github.dwep1337.updown.domain.service.DownloadFileService;
 import github.dwep1337.updown.domain.service.FileUploadService;
-import github.dwep1337.updown.shared.dtos.CreateContentTypeDTO;
-import github.dwep1337.updown.shared.dtos.FileUploadDTO;
-import github.dwep1337.updown.shared.dtos.FileUploadResponseDTO;
+import github.dwep1337.updown.shared.dtos.create.FileUploadDTO;
+import github.dwep1337.updown.shared.dtos.response.FileUploadResponseDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,11 +20,12 @@ public class FileController {
     private final DownloadFileService downloadFileService;
 
     @PostMapping
-    public ResponseEntity<FileUploadResponseDTO> uploadFile(@Valid @ModelAttribute FileUploadDTO fileUploadDTO) {
+    public ResponseEntity<FileUploadResponseDTO> uploadFile(
+            @Valid @ModelAttribute FileUploadDTO fileUploadDTO) {
         return fileUploadService.uploadFile(fileUploadDTO);
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<InputStreamResource> downloadFile(
             @RequestParam(value = "download", defaultValue = "") String download) {
         return downloadFileService.downloadFile(download);

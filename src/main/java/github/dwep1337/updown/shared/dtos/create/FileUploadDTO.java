@@ -1,4 +1,4 @@
-package github.dwep1337.updown.shared.dtos;
+package github.dwep1337.updown.shared.dtos.create;
 
 import github.dwep1337.updown.shared.validation.IsAllowedContentType;
 import jakarta.validation.constraints.NotNull;
