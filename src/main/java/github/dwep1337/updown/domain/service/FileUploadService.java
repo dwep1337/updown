@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -62,5 +63,9 @@ public class FileUploadService {
 
         fileRepository.delete(file);     //delete from database
         minIOService.deleteFile(referenceCode);    //delete from MinIO
+    }
+
+    public ResponseEntity<List<File>> listFiles() {
+        return ResponseEntity.ok(fileRepository.findAll());
     }
 }

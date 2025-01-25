@@ -23,7 +23,9 @@ public class TokenService {
 
             Instant oneDay = LocalDateTime.now().plusDays(1).toInstant(ZoneOffset.UTC);
 
-            return JWT.create().withIssuer("updown-backend").withSubject(username).withExpiresAt(oneDay).sign(algorithm);
+            return JWT.create().withIssuer("updown-backend")
+                    .withSubject(username)
+                    .withExpiresAt(oneDay).sign(algorithm);
         } catch (JWTCreationException ex) {
             return null;
         }
@@ -32,7 +34,9 @@ public class TokenService {
     public String validateToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
-            return JWT.require(algorithm).withIssuer("updown-backend").build().verify(token).getSubject();
+            return JWT.require(algorithm)
+                    .withIssuer("updown-backend")
+                    .build().verify(token).getSubject();
         } catch (JWTVerificationException ex) {
             return null;
         }
